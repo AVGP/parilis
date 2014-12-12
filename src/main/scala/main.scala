@@ -1,4 +1,6 @@
 import spray.http._
+import spray.json._
+import DefaultJsonProtocol._
 import spray.client.pipelining._
 import akka.actor.ActorSystem
 import scala.concurrent._
@@ -25,7 +27,7 @@ object Application {
     val config = ConfigFactory.load()
     
     val pipeline: HttpRequest => Future[HttpResponse] = sendReceive
-    
+
     val body = HttpEntity(
       contentType = ContentType(`application/json`, `UTF-8`),
       string =
@@ -33,15 +35,27 @@ object Application {
             "jsonrpc" : "2.0",
             "id" : "${config.getString("id")}",
             "method" : "${config.getString("method")}",
-            "params" : { "msg": "hi" }
+            "params" : ${config.getString("params")}
         }"""
     )
     
     val response: Future[HttpResponse] = pipeline(Post(config.getString("url"),body))
 
     response onComplete {
-        case Success(response) => isExpectedResponse(response.entity.asString, config.getString("response"))
-        case Failure(err) => println(err)
+        case Success(response) => {
+          if(isExpectedResponse(response.entity.asString, config.getString("response")) == true) {
+            system.shutdown()
+            System.exit(0)
+          } else {
+            system.shutdown()
+            System.exit(1)
+          }
+        }
+        case Failure(err) => {
+          println(err)
+          system.shutdown()
+          System.exit(1)
+        }
     }
 
     println(s"Testing method ${config.getString("method")} at ${config.getString("url")}")
