@@ -7,3 +7,6 @@
     o888o        `Y888""8o d888b    o888o o888o o888o 8""888P' 
     
 # Testing JSON-RPC 2.0 APIs how it should be.
+
+## Basic usage
+## License
