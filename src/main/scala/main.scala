@@ -58,6 +58,6 @@ object Application {
         }
     }
 
-    println(s"Testing method ${config.getString("method")} at ${config.getString("url")}")
+    println(s"Testing method \"${config.getString("method")}\" at ${config.getString("url")}")
   }
 }

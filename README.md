@@ -9,19 +9,58 @@
 # Testing JSON-RPC 2.0 APIs made easy
 
 ## Basic usage
-Create a configuration file that contains the `URL`, `method` and `parameters` and the expected response like this:
+Create a configuration file, e.g. `sample.conf` that contains the `URL`, `method` and `parameters` and the expected `response` like this:
 
 ```hocon
 url = "https://api.example.com/json-rpc"
-headers.x-custom = my header
 method = echo
 id = "abcd1234"
-params.msg = Hello world
+
+params = """{
+  "msg": "Hello world"
+}"""
+
 response = """{
  "jsonrpc": "2.0",
  "result": {
-  "msg": "hi"
+  "msg": "Hello world"
  },
  "id": "abcd1234"
 }"""
 ```
+
+And then execute it with
+
+```shell
+java -Dconfig.file=/path/to/sample.conf -jar dist/parilis-assembly-1.0.0.jar
+```
+
+If the test is successful the tool will exit with status "0" like this:
+
+``` shell
+$ java -Dconfig.file=/path/to/sample.conf -jar dist/parilis-assembly-1.0.0.jar
+Testing method "echo" at https://api.example.com/json-rpc
+API responded correctly.
+```
+
+If the test fails, you will see an exit status of "1" and output like this:
+
+``` shell
+$ java -Dconfig.file=/path/to/sample.conf -jar dist/parilis-assembly-1.0.0.jar
+Testing method "echo" at https://api.example.com/json-rpc
+Error: Got {
+ "jsonrpc": "2.0",
+ "result": {
+  "msg": "Hello world"
+ },
+ "id": "abcd1234"
+} where {
+ "jsonrpc": "2.0",
+ "result": {
+  "msg": "Hello world!"
+ },
+ "id": "abcd1234"
+} was expected.
+```
+
+Voila!
