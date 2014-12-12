@@ -46,7 +46,7 @@ API responded correctly.
 If the test fails, you will see an exit status of "1" and output like this:
 
 ``` shell
-$ java -Dconfig.file=/path/to/sample.conf -jar dist/parilis-assembly-1.0.0.jar
+$ java -Dconfig.file=/path/to/sample.conf -jar dist/parilis-1.0.0.jar
 Testing method "echo" at https://api.example.com/json-rpc
 Error: Got {
  "jsonrpc": "2.0",
